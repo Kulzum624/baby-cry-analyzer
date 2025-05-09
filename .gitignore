@@ -1,0 +1,75 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Logs
+*.log
+
+# Data
+data/processed/
+data/*.wav
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Audio files
+*.wav
+*.mp3
+*.ogg
+
+# Logs
+*.log
+logs/
+
+# Large model files
+*.pth
+*.h5
+models/*.pth
+models/*.h5
+models/best_model.h5
+models/baby_cry_model.h5
+models/panns_cnn14.pth
+models/panns_weights.pth 
