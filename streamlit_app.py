@@ -81,50 +81,48 @@ except Exception as e:
 st.title("Baby Cry Analyzer")
 
 # Create tabs for different input methods
-tab1, tab2 = st.tabs(["Upload Audio", "Record Audio"])
+tab1, tab2 = st.tabs(["Upload Audio", "Instructions"])
 
 with tab1:
     st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-    st.write("Drag and drop file here")
-    uploaded_file = st.file_uploader("", type=['wav'], key="file_uploader")
-    st.write("Limit 200MB per file • WAV")
+    st.write("Upload Baby's Cry Audio")
+    uploaded_file = st.file_uploader("", type=['wav', 'mp3'], key="file_uploader")
+    st.write("Supported formats: WAV, MP3 • Max size: 200MB")
+    
+    if uploaded_file is not None:
+        st.audio(uploaded_file, format='audio/wav')
+        if st.button("Analyze Audio"):
+            st.session_state.analyze_file = True
     st.markdown('</div>', unsafe_allow_html=True)
 
 with tab2:
     st.markdown('<div class="upload-box">', unsafe_allow_html=True)
-    st.write("Record Baby's Cry")
+    st.write("How to Use:")
+    st.markdown("""
+    1. Record your baby's cry using any recording app on your phone or computer
+    2. Save the recording as a WAV or MP3 file
+    3. Upload the file using the 'Upload Audio' tab
+    4. Click 'Analyze Audio' to get results
     
-    # Using Streamlit's built-in audio recorder
-    audio_bytes = st.audio_recorder()
-    
-    if audio_bytes is not None:
-        # Save the recorded audio to a temporary WAV file
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-            tmp_file.write(audio_bytes)
-            st.session_state.recorded_file = tmp_file.name
-            st.success("Recording saved! Click 'Analyze' to process.")
-            
-        if st.button("Analyze Recording"):
-            st.session_state.analyze_recording = True
-    
+    Tips for best results:
+    - Record in a quiet environment
+    - Keep the microphone close to your baby
+    - Record for at least 3-5 seconds
+    - Avoid background noise
+    """)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Process audio (either uploaded or recorded)
-audio_file = uploaded_file if uploaded_file is not None else (
-    st.session_state.get('recorded_file') if 'recorded_file' in st.session_state 
-    and getattr(st.session_state, 'analyze_recording', False) else None
-)
-
-if audio_file is not None:
+# Process audio file
+if uploaded_file is not None and st.session_state.get('analyze_file', False):
     st.markdown('<div class="results-box">', unsafe_allow_html=True)
     with st.spinner("Analyzing cry pattern..."):
         try:
             # Create a temporary file if using uploaded file
-            if isinstance(audio_file, str):
-                audio_path = audio_file
+            if isinstance(uploaded_file, str):
+                audio_path = uploaded_file
             else:
                 with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
-                    tmp_file.write(audio_file.getvalue())
+                    tmp_file.write(uploaded_file.getvalue())
                     audio_path = tmp_file.name
 
             # Extract features
@@ -152,12 +150,8 @@ if audio_file is not None:
                 st.progress(prob_value)
             
             # Cleanup
-            if not isinstance(audio_file, str):
+            if not isinstance(uploaded_file, str):
                 os.unlink(audio_path)
-            elif 'recorded_file' in st.session_state:
-                os.remove(st.session_state.recorded_file)
-                del st.session_state.recorded_file
-                st.session_state.analyze_recording = False
                 
         except Exception as e:
             st.error(f"Error processing audio: {str(e)}")
