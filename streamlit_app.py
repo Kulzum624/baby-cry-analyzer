@@ -6,7 +6,6 @@ import tempfile
 import os
 from datetime import datetime
 import numpy as np
-from audio_recorder_streamlit import audio_recorder
 
 # Page configuration
 st.set_page_config(
@@ -95,8 +94,8 @@ with tab2:
     st.markdown('<div class="upload-box">', unsafe_allow_html=True)
     st.write("Record Baby's Cry")
     
-    # Using audio_recorder_streamlit
-    audio_bytes = audio_recorder(
+    # Using Streamlit's built-in audio recorder
+    audio_bytes = st.audio_recorder(
         text="Click to record",
         recording_color="#4CAF50",
         neutral_color="#666",
