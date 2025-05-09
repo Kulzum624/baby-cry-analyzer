@@ -95,13 +95,7 @@ with tab2:
     st.write("Record Baby's Cry")
     
     # Using Streamlit's built-in audio recorder
-    audio_bytes = st.audio_recorder(
-        text="Click to record",
-        recording_color="#4CAF50",
-        neutral_color="#666",
-        icon_name="microphone",
-        icon_size="2x"
-    )
+    audio_bytes = st.audio_recorder()
     
     if audio_bytes is not None:
         # Save the recorded audio to a temporary WAV file
